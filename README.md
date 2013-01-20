@@ -2,6 +2,12 @@
 - классический файловый режим
 - режим работы с ОЗУ
 
+Установка пакета
+================
+Для установки пакета наберите в консоли следущую команду:
+
+go get github.com/Trusow/http_session
+
 Инициализация сессий
 ====================
 Для инициализиции файлового режима или режима работы с ОЗУ необходима следующая функция:
@@ -34,6 +40,45 @@ func (s *session) Get (name string, r *http.Request) string
 func (s *session) Remove(r *http.Request)
 
 Где r является запросом к серверу
+
+Пример использования
+====================
+package main
+
+import(
+
+  "net/http"
+  
+  "github.com/Trusow/http_session"
+  
+)
+var video,_ = http_session.Init("video", 10, 10, "./video/")
+
+func requestHandler(w http.ResponseWriter, r *http.Request){
+
+  video.Set("name","play", w, r)
+  
+  w.Header().Add("Content-Type", "text/html;charset=utf-8")
+  
+  w.Header().Add("Content-Language", "ru")
+  
+  w.Write([]byte(video.Get("name",r)))
+  
+}
+
+func qweHandler(w http.ResponseWriter, r *http.Request){
+
+}
+func main(){
+
+  http.HandleFunc("/", requestHandler)
+  
+  http.HandleFunc("/favicon.ico", qweHandler)
+  
+  http.ListenAndServe(":8080", nil)
+  
+}
+
 
 Ошибки
 ======
